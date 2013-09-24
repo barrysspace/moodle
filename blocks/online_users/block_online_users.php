@@ -68,26 +68,32 @@ class block_online_users extends block_base {
 
         $groupmembers = "";
         $groupselect  = "";
+        $groupby       = "";
+        $lastaccess    = ", lastaccess";
+        $timeaccess    = ", ul.timeaccess AS lastaccess";
         $params = array();
+
+        $userfields = user_picture::fields('u', array('username'));
 
         //Add this to the SQL to show only group users
         if ($currentgroup !== NULL) {
             $groupmembers = ", {groups_members} gm";
             $groupselect = "AND u.id = gm.userid AND gm.groupid = :currentgroup";
+            $groupby = "GROUP BY $userfields";
+            $lastaccess = ", MAX(u.lastaccess) AS lastaccess";
+            $timeaccess = ", MAX(ul.timeaccess) AS lastaccess";
             $params['currentgroup'] = $currentgroup;
         }
 
-        $userfields = user_picture::fields('u', array('username'));
         $params['now'] = $now;
         $params['timefrom'] = $timefrom;
         if ($this->page->course->id == SITEID or $this->page->context->contextlevel < CONTEXT_COURSE) {  // Site-level
-            $sql = "SELECT $userfields, MAX(u.lastaccess) AS lastaccess
+            $sql = "SELECT $userfields $lastaccess
                       FROM {user} u $groupmembers
                      WHERE u.lastaccess > :timefrom
                            AND u.lastaccess <= :now
                            AND u.deleted = 0
-                           $groupselect
-                  GROUP BY $userfields
+                           $groupselect $groupby
                   ORDER BY lastaccess DESC ";
 
            $csql = "SELECT COUNT(u.id)
@@ -104,7 +110,7 @@ class block_online_users extends block_base {
             list($esqljoin, $eparams) = get_enrolled_sql($this->page->context);
             $params = array_merge($params, $eparams);
 
-            $sql = "SELECT $userfields, MAX(ul.timeaccess) AS lastaccess
+            $sql = "SELECT $userfields $timeaccess
                       FROM {user_lastaccess} ul $groupmembers, {user} u
                       JOIN ($esqljoin) euj ON euj.id = u.id
                      WHERE ul.timeaccess > :timefrom
@@ -112,8 +118,7 @@ class block_online_users extends block_base {
                            AND ul.courseid = :courseid
                            AND ul.timeaccess <= :now
                            AND u.deleted = 0
-                           $groupselect
-                  GROUP BY $userfields
+                           $groupselect $groupby
                   ORDER BY lastaccess DESC";
 
            $csql = "SELECT COUNT(u.id)
