@@ -36,6 +36,9 @@
 .path-mod-book .block_book_toc li li {
     list-style: none;
 }
+.path-mod-book .block_book_toc li li:before {
+    display: none;
+}
 .path-mod-book .block_book_toc .action-list { float: right; }
 .dir-rtl.path-mod-book .block_book_toc .action-list { float: left; }
 .path-mod-book .block_book_toc .action-list img.smallicon {
