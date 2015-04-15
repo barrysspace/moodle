@@ -68,7 +68,6 @@ class block_online_users extends block_base {
 
         $groupmembers = "";
         $groupselect  = "";
-        $groupby       = "";
         $lastaccess    = ", lastaccess";
         $timeaccess    = ", ul.timeaccess AS lastaccess";
         $params = array();
@@ -79,9 +78,6 @@ class block_online_users extends block_base {
         if ($currentgroup !== NULL) {
             $groupmembers = ", {groups_members} gm";
             $groupselect = "AND u.id = gm.userid AND gm.groupid = :currentgroup";
-            $groupby = "GROUP BY $userfields";
-            $lastaccess = ", MAX(u.lastaccess) AS lastaccess";
-            $timeaccess = ", MAX(ul.timeaccess) AS lastaccess";
             $params['currentgroup'] = $currentgroup;
         }
 
@@ -93,7 +89,7 @@ class block_online_users extends block_base {
                      WHERE u.lastaccess > :timefrom
                            AND u.lastaccess <= :now
                            AND u.deleted = 0
-                           $groupselect $groupby
+                           $groupselect
                   ORDER BY lastaccess DESC ";
 
            $csql = "SELECT COUNT(u.id)
