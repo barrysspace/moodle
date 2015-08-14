@@ -60,4 +60,57 @@ class block_online_users_generator extends testing_block_generator {
 
         return $instance;
     }
+
+    /**
+     * Create logged in users and add some of them to groups in a course
+     */
+    public function create_logged_in_users() {
+
+        $generator = advanced_testcase::getDataGenerator();
+        $course1 = $generator->create_course();
+        // Create some logged in users who are logged into $course1.
+        $user1 = $generator->create_logged_in_user(null, $course1->id);
+        $user2 = $generator->create_logged_in_user(null, $course1->id);
+        $user3 = $generator->create_logged_in_user(null, $course1->id);
+        $user4 = $generator->create_logged_in_user(null, $course1->id);
+        $user5 = $generator->create_logged_in_user(null, $course1->id);
+        $user6 = $generator->create_logged_in_user(null, $course1->id);
+        $user7 = $generator->create_logged_in_user(null, $course1->id);
+        $user8 = $generator->create_logged_in_user(null, $course1->id);
+        $user9 = $generator->create_logged_in_user(null, $course1->id);
+        // Create some logged in users who are not logged into $course1.
+        $user10 = $generator->create_logged_in_user();
+        $user11 = $generator->create_logged_in_user();
+        $user12 = $generator->create_logged_in_user();
+        // Create group 1 in course 1.
+        $group1 = $generator->create_group(array('courseid' => $course1->id));
+        // Create group 2 in course 1.
+        $group2 = $generator->create_group(array('courseid' => $course1->id));
+        // Add some users to course group 1.
+        $generator->create_group_member(array('groupid' => $group1->id, 'userid' => $user1->id));
+        $generator->create_group_member(array('groupid' => $group1->id, 'userid' => $user2->id));
+        $generator->create_group_member(array('groupid' => $group1->id, 'userid' => $user3->id));
+        // Add some users to course group 2.
+        $generator->create_group_member(array('groupid' => $group2->id, 'userid' => $user4->id));
+        $generator->create_group_member(array('groupid' => $group2->id, 'userid' => $user5->id));
+        $generator->create_group_member(array('groupid' => $group2->id, 'userid' => $user6->id));
+        $data = array();
+        $data['user1'] = $user1;
+        $data['user2'] = $user2;
+        $data['user3'] = $user3;
+        $data['user4'] = $user4;
+        $data['user5'] = $user5;
+        $data['user6'] = $user6;
+        $data['user7'] = $user7;
+        $data['user8'] = $user8;
+        $data['user9'] = $user9;
+        $data['user10'] = $user10;
+        $data['user11'] = $user11;
+        $data['user12'] = $user12;
+        $data['group1'] = $group1;
+        $data['group2'] = $group2;
+        $data['course1'] = $course1;
+
+        return $data; // Return the user, course and group objects.
+    }
 }

@@ -276,6 +276,37 @@ EOD;
     }
 
     /**
+     * Create a logged in user and log them in to a course that they are enrolled in
+     * @param int $userid
+     * @param int $courseid
+     */
+    public function create_logged_in_user($userid = null, $courseid = null) {
+        global $DB;
+
+        if (empty($userid)) {
+            $user = $this->create_user();
+            $userid = $user->id;
+        } else {
+            $user = $DB->get_record('user', array('id' => $userid));
+            $userid = $user->id;
+        }
+        $now = time();
+        $user->lastaccess = $now;
+        $DB->update_record('user', $user);
+
+        if (empty($courseid)) {
+            $course = $this->create_course();
+            $courseid = $course->id;
+        } else {
+            $course = get_course($courseid);
+        }
+
+        $this->enrol_user($userid, $courseid);
+        $DB->insert_record('user_lastaccess', array('userid' => $user->id, 'courseid' => $course->id, 'timeaccess' => $now));
+        return $user;
+    }
+
+    /**
      * Create a test course category
      * @param array|stdClass $record
      * @param array $options
