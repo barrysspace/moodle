@@ -45,6 +45,7 @@ $string['currentusers'] = 'Current users';
 $string['currentusersmatching'] = 'Current users matching';
 $string['defaultcontext'] = 'Default context';
 $string['delcohort'] = 'Delete cohort';
+$string['delcohorts'] = 'Delete selected cohorts';
 $string['delconfirm'] = 'Do you really want to delete cohort \'{$a}\'?';
 $string['description'] = 'Description';
 $string['displayedrows'] = '{$a->displayed} rows displayed out of {$a->total}.';
@@ -85,3 +86,4 @@ $string['uploadcohorts_help'] = 'Cohorts may be uploaded via text file. The form
 $string['visible'] = 'Visible';
 $string['visible_help'] = "Any cohort can be viewed by users who have 'moodle/cohort:view' capability in the cohort context.<br/>
 Visible cohorts can also be viewed by users in the underlying courses.";
+$string['withselected'] = 'With selected cohorts';
