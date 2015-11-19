@@ -121,6 +121,7 @@ $data = array();
 $editcolumnisempty = true;
 foreach($cohorts['cohorts'] as $cohort) {
     $line = array();
+    $line[] = html_writer::checkbox('cohortids[]', $cohort->id, false);
     $cohortcontext = context::instance_by_id($cohort->contextid);
     $cohort->description = file_rewrite_pluginfile_urls($cohort->description, 'pluginfile.php', $cohortcontext->id,
             'cohort', 'description', $cohort->id);
@@ -191,6 +192,10 @@ if ($showall) {
     array_unshift($table->head, get_string('category'));
     array_unshift($table->colclasses, 'leftalign category');
 }
+
+array_unshift($table->head, '');
+array_unshift($table->colclasses, 'centeralign');
+
 if (!$editcolumnisempty) {
     $table->head[] = get_string('edit');
     $table->colclasses[] = 'centeralign action';
@@ -203,6 +208,23 @@ if (!$editcolumnisempty) {
 $table->id = 'cohorts';
 $table->attributes['class'] = 'admintable generaltable';
 $table->data  = $data;
+
+echo html_writer::start_tag('form', array('method' => 'post', 'action' => 'edit.php', 'contextid' => $context->id));
 echo html_writer::table($table);
+echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'delete', 'value' => 1));
+echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'contextid', 'value' => $context->id));
+echo html_writer::empty_tag('input', array('type' => 'hidden', 'name' => 'sesskey', 'value' => sesskey()));
+$options = array(1 => get_string('delete'));
+
+$controls = html_writer::select($options, 'action');
+$attributes = array(
+        'type'  => 'submit',
+        'name'  => 'ok',
+        'value' => get_string('ok'));
+$controls .= html_writer::empty_tag('input', $attributes);
+
+echo $controls;
+echo html_writer::end_tag('form');
+            
 echo $OUTPUT->paging_bar($cohorts['totalcohorts'], $page, 25, $baseurl);
 echo $OUTPUT->footer();
